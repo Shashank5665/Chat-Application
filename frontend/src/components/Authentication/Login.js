@@ -14,9 +14,9 @@ const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
+
   const history = useHistory();
 
-  // This is to check if email and password are empty
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
@@ -31,7 +31,7 @@ const Login = () => {
       return;
     }
 
-    // This is to check if email and password are valid
+    // console.log(email, password);
     try {
       const config = {
         headers: {
@@ -105,7 +105,6 @@ const Login = () => {
       >
         Login
       </Button>
-      {/* The below button is to set default values for email and password */}
       <Button
         variant="solid"
         colorScheme="red"
