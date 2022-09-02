@@ -7,18 +7,22 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 
+//----------------------------------------------------------------------------------------------------------------------
+
+//LOGIN PAGE
 const Login = () => {
   const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
-  const toast = useToast();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
-
+  const toast = useToast();
   const history = useHistory();
+  const handleClick = () => setShow(!show);
 
+  //WHEN A USER CLICKS LOGIN BUTTON
   const submitHandler = async () => {
     setLoading(true);
+    //CHECK IF EMAIL AND PASSWORD ARE EMPTY
     if (!email || !password) {
       toast({
         title: "Please Fill all the Feilds",
@@ -31,21 +35,18 @@ const Login = () => {
       return;
     }
 
-    // console.log(email, password);
     try {
       const config = {
         headers: {
           "Content-type": "application/json",
         },
       };
-
       const { data } = await axios.post(
         "/api/user/login",
         { email, password },
         config
       );
-
-      // console.log(JSON.stringify(data));
+      //IF EVERYTHING GOES FINE
       toast({
         title: "Login Successful",
         status: "success",
@@ -53,6 +54,7 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
+      //SAVE THE TOKEN IN LOCAL STORAGE
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       history.push("/chats");
@@ -69,8 +71,13 @@ const Login = () => {
     }
   };
 
+  //----------------------------------------------------------------------------------------------------------------------
+
+  //RENDER THE LOGIN PAGE
   return (
     <VStack spacing="10px">
+      //----------------------------------------------------------------------------------------------------------------------
+      //EMAIL FIELD
       <FormControl id="email" isRequired>
         <FormLabel>Email Address</FormLabel>
         <Input
@@ -80,6 +87,8 @@ const Login = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
+      //----------------------------------------------------------------------------------------------------------------------
+      //PASSWORD FIELD
       <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup size="md">
@@ -96,6 +105,8 @@ const Login = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
+      //----------------------------------------------------------------------------------------------------------------------
+      //LOGIN BUTTON
       <Button
         colorScheme="blue"
         width="100%"
@@ -105,6 +116,8 @@ const Login = () => {
       >
         Login
       </Button>
+      //----------------------------------------------------------------------------------------------------------------------
+      //GUEST BUTTON
       <Button
         variant="solid"
         colorScheme="red"
@@ -119,5 +132,5 @@ const Login = () => {
     </VStack>
   );
 };
-
+//----------------------------------------------------------------------------------------------------------------------
 export default Login;
