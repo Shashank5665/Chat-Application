@@ -15,7 +15,7 @@ const accessChat = asyncHandler(async (req, res) => {
     return res.sendStatus(400);
   }
 
-  //If we have a user id then we need to check if a chat already exists between the two users
+  //Checking if the chat already exists between the two users
   var isChat = await Chat.find({
     isGroupChat: false,
     $and: [
@@ -39,9 +39,12 @@ const accessChat = asyncHandler(async (req, res) => {
     select: "name pic email",
   });
 
+  //since isChat is an array of collections(in this case, we get only one),So we need to check if it is empty or not
   if (isChat.length > 0) {
+    //If it's not empty, then we have a chat between the two users, so we return the chat
     res.send(isChat[0]);
   } else {
+    //If the chat does not exist, then we create a new chat
     var chatData = {
       chatName: "sender",
       isGroupChat: false,
@@ -49,6 +52,7 @@ const accessChat = asyncHandler(async (req, res) => {
     };
 
     try {
+      //This is for creating a new chat with chatData as the data
       const createdChat = await Chat.create(chatData);
       const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
         "users",
@@ -67,16 +71,24 @@ const accessChat = asyncHandler(async (req, res) => {
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
   try {
-    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+    await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+      //The above line says, 'find a chat collection, in which the user._id is present in the users array'
+      //basically find a Chat --> users --> user._id, The Chat.find() will returns
+      //an array chat collection not users array or anyting else.
+      //after that we need to populate the users, groupAdmin and latestMessage fields
       .populate("users", "-password")
       .populate("groupAdmin", "-password")
       .populate("latestMessage")
+      //sort the chats by the latestMessage timestamp
       .sort({ updatedAt: -1 })
+      // .then(async (results) => {
+      //   results = await User.populate(results, {
+      //     path: "latestMessage.sender",
+      //     select: "name pic email",
+      //   });
+      //   res.status(200).send(results);
+      // });
       .then(async (results) => {
-        results = await User.populate(results, {
-          path: "latestMessage.sender",
-          select: "name pic email",
-        });
         res.status(200).send(results);
       });
   } catch (error) {

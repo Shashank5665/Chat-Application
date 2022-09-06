@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const chats = require("./data/data.js");
 const connectDB = require("./config/db.js");
 const userRoutes = require("./routes/userRoutes.js");
 const chatRoutes = require("./routes/chatRoutes.js");
@@ -16,9 +15,9 @@ const port = process.env.PORT || 5000;
 
 //MIDDLEWARES
 app.use("/api/user", userRoutes);
+app.use("/api/chat", chatRoutes);
 app.use(notFound);
 app.use(errorHandler);
-app.use("/api/chat", chatRoutes);
 
 //----------------------------------------------------------------------------------------------------------------------
 
