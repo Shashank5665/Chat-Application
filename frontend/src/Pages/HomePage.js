@@ -28,14 +28,14 @@ const HomePage = () => {
         borderWidth="1px"
       >
         <Text fontSize="4xl" fontFamily="Work sans">
-          Talk-A-Tive
+          Let's talk
         </Text>
       </Box>
       <Box bg="white" w="100%" p={4} borderRadius="lg" borderWidth="1px">
-        <Tabs isFitted variant="soft-rounded">
+        <Tabs isFitted variant="solid-rounded">
           <TabList mb="1em">
-            <Tab>Login</Tab>
-            <Tab>Sign Up</Tab>
+            <Tab border={"1px solid blue"}>Login</Tab>
+            <Tab border={"1px solid blue"}>Sign Up</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>

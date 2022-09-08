@@ -34,10 +34,7 @@ const accessChat = asyncHandler(async (req, res) => {
   //Once we have the chat, we need to populate the users and latestMessage fields
   //The populate method is used to populate the fields with the data from the referenced model
 
-  isChat = await User.populate(isChat, {
-    path: "latestMessage.sender",
-    select: "name pic email",
-  });
+  //---------------{ LEFT OUT CODE WHICH IS NOT REQUIRED </> }----------------
 
   //since isChat is an array of collections(in this case, we get only one),So we need to check if it is empty or not
   if (isChat.length > 0) {
@@ -66,7 +63,7 @@ const accessChat = asyncHandler(async (req, res) => {
   }
 });
 //---------------------------------------------------------------------------------------------
-//@description     Fetch all chats for a user
+//@description     Fetch all chats that the currently logged in user is a part of
 //@route           GET /api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
@@ -81,13 +78,9 @@ const fetchChats = asyncHandler(async (req, res) => {
       .populate("latestMessage")
       //sort the chats by the latestMessage timestamp
       .sort({ updatedAt: -1 })
-      // .then(async (results) => {
-      //   results = await User.populate(results, {
-      //     path: "latestMessage.sender",
-      //     select: "name pic email",
-      //   });
-      //   res.status(200).send(results);
-      // });
+
+      //---------------{ LEFT OUT CODE WHICH IS NOT REQUIRED </> }----------------
+
       .then(async (results) => {
         res.status(200).send(results);
       });
@@ -101,32 +94,43 @@ const fetchChats = asyncHandler(async (req, res) => {
 //@route           POST /api/chat/group
 //@access          Protected
 const createGroupChat = asyncHandler(async (req, res) => {
+  //A group chat requires a name and a list of users
+
+  //So, we are checking if the name and users are present in the request
   if (!req.body.users || !req.body.name) {
+    //if there is no name or users, then will return(eding the request)
     return res.status(400).send({ message: "Please Fill all the feilds" });
   }
 
+  //The below line executes if the name and users are present in the request
+  //We are going to send string data from the frontend, so we need to convert it to an JSON array at the backend
   var users = JSON.parse(req.body.users);
 
+  //A group chat requires atleast 2 users, so we are checking if the users array has atleast 2 users
   if (users.length < 2) {
     return res
       .status(400)
       .send("More than 2 users are required to form a group chat");
   }
 
+  //We are adding the currently logged in user to the users array as well, since he is also a part of the group chat
+  //Below req.user is the currently logged in user
   users.push(req.user);
 
+  //If everything is fine, then we come to this line where we create a new group
   try {
     const groupChat = await Chat.create({
       chatName: req.body.name,
       users: users,
       isGroupChat: true,
+      //group admin is the user who is currently logged in, cuz he is the one who is creating the group
       groupAdmin: req.user,
     });
 
+    //Once it's created in database, we are fetching the same from the database and sending it to the frontend(client)
     const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
       .populate("users", "-password")
       .populate("groupAdmin", "-password");
-
     res.status(200).json(fullGroupChat);
   } catch (error) {
     res.status(400);
@@ -138,15 +142,17 @@ const createGroupChat = asyncHandler(async (req, res) => {
 // @route   PUT /api/chat/rename
 // @access  Protected
 const renameGroup = asyncHandler(async (req, res) => {
+  //We are taking the chatId and the new name from the request
   const { chatId, chatName } = req.body;
 
+  //Then we are finding the chat with the chatId and updating the chatName
   const updatedChat = await Chat.findByIdAndUpdate(
-    chatId,
+    chatId, //field to find i.e chatId
     {
-      chatName: chatName,
+      chatName: chatName, //field to update i.e chatName
     },
     {
-      new: true,
+      new: true, //this should be true, so that we get the new(updated) chat
     }
   )
     .populate("users", "-password")
@@ -192,6 +198,9 @@ const removeFromGroup = asyncHandler(async (req, res) => {
 // @route   PUT /api/chat/groupadd
 // @access  Protected
 const addToGroup = asyncHandler(async (req, res) => {
+  //Get the chatId and the userId from the request
+  //chatId the chatId of the group chat
+  //userId the userId of the user who is to be added to the group
   const { chatId, userId } = req.body;
 
   // check if the requester is admin
