@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Box,
@@ -13,7 +13,15 @@ import {
 // import { useHistory } from "react-router";
 import Login from "../components/Authentication/Login";
 import Signup from "../components/Authentication/Signup";
+import { useHistory } from "react-router-dom";
 const HomePage = () => {
+  //We are checking if the user is already logged in or not, if yes, then redirect to the chat page
+  const history = useHistory();
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo) history.push("/chats");
+  }, [history]);
+
   return (
     <Container maxW="xl" centerContent>
       {/* Box is just like a div in html. */}

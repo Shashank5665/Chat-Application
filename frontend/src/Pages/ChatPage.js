@@ -1,28 +1,25 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { Box } from "@chakra-ui/layout";
+import { useState } from "react";
+import Chatbox from "../components/Chatbox";
+import MyChats from "../components/MyChats";
+import SideDrawer from "../components/miscellaneous/SideDrawer";
+import { ChatState } from "../Context/ChatProvider";
 
-const ChatPage = () => {
-  // useState is a hook that allows us to create a state variable and set it to a value or update it to a new value.
-  const [chats, setChats] = useState([]);
-  const fetchChats = async () => {
-    const data = await axios.get("/api/chat");
-    //the above line is getting the data from the server.js file where the endpoint is defined
-    setChats(data.data);
-    //in the above line, 1st data is the object and 2nd data is the property of the object which is an array in this case
-    console.log(data.data);
-  };
-  // useEffect is a hook that is used to run a piece of code based on a specific condition.
-  useEffect(() => {
-    fetchChats();
-  }, []);
+const Chatpage = () => {
+  const [fetchAgain, setFetchAgain] = useState(false);
+  const { user } = ChatState();
 
   return (
-    <div>
-      {chats.map((chat) => (
-        <div key={chat._id}>{chat.chatName}</div>
-      ))}
+    <div style={{ width: "100%" }}>
+      {user && <SideDrawer />}
+      <Box d="flex" justifyContent="space-between" w="100%" h="91.5vh" p="10px">
+        {user && <MyChats fetchAgain={fetchAgain} />}
+        {user && (
+          <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+        )}
+      </Box>
     </div>
   );
 };
 
-export default ChatPage;
+export default Chatpage;
