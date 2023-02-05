@@ -39,6 +39,7 @@ const Login = () => {
       const config = {
         headers: {
           "Content-type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("userInfo")}`,
         },
       };
       const { data } = await axios.post(
