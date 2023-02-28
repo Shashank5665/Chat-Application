@@ -12,8 +12,8 @@ import { useHistory } from "react-router-dom";
 //LOGIN PAGE
 const Login = () => {
   const [show, setShow] = useState(false);
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const history = useHistory();
@@ -47,6 +47,7 @@ const Login = () => {
         { email, password },
         config
       );
+
       //IF EVERYTHING GOES FINE
       toast({
         title: "Login Successful",
@@ -55,6 +56,7 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
+
       //SAVE THE TOKEN IN LOCAL STORAGE
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
