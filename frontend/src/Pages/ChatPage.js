@@ -28,4 +28,6 @@ const Chatpage = () => {
   );
 };
 
+// COMPONENTS = [ SideDrawer, MyChats, Chatbox ]
+
 export default Chatpage;
