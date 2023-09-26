@@ -20,8 +20,8 @@ import io from "socket.io-client";
 import animationData from "../animations/typing.json";
 import { Button } from "@material-ui/core";
 import SendIcon from "@mui/icons-material/Send";
+import { BASE_URL } from "../services/helper";
 
-const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -45,7 +45,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       };
       setLoading(true);
       const { data } = await axios.get(
-        `/api/message/${selectedChat._id}`,
+        `${BASE_URL}/api/message/${selectedChat._id}`,
         config
       );
       console.log(data);
@@ -71,7 +71,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(BASE_URL);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
@@ -111,7 +111,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "/api/message",
+          `${BASE_URL}/api/message`,
           {
             content: newMessage,
             chatId: selectedChat._id,

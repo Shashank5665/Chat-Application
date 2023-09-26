@@ -6,6 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
+import { BASE_URL } from "../../services/helper";
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ const Login = () => {
         },
       };
       const { data } = await axios.post(
-        "/api/user/login",
+        `${BASE_URL}/api/user/login`,
         { email, password },
         config
       );
