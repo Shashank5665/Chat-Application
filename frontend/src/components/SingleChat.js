@@ -19,7 +19,7 @@ import "./styles.css";
 import io from "socket.io-client";
 import animationData from "../animations/typing.json";
 import { Button } from "@material-ui/core";
-import SendIcon from "@mui/icons-material/Send";
+
 import { BASE_URL } from "../services/helper";
 
 var socket, selectedChatCompare;
@@ -224,9 +224,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   borderRadius: "0px",
                   backgroundColor: "#FFFFFF",
                 }}
-                endIcon={<SendIcon style={{ color: "#E50061" }} />}
                 onClick={sendMessage}
-              ></Button>
+              >
+                {" "}
+                send{" "}
+              </Button>
             </FormControl>
           </Box>
         </>
