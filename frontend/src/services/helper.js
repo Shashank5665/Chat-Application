@@ -1,1 +1,1 @@
-export const BASE_URL = "https://chat-application-backend-two.vercel.app/";
+export const BASE_URL = "https://chatappbackenddeploy.onrender.com";
